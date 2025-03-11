@@ -1,24 +1,24 @@
 import 'dart:async';
 
+import 'package:fleather/fleather.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:flutter_quill/quill_delta.dart' as quill;
 import 'package:flutter_wysiwyg_editor_comparison/presentation/widgets/editor_result_table_widget.dart';
 import 'package:markdown/markdown.dart';
 import 'package:markdown_quill/markdown_quill.dart';
 
-class FlutterQuillEditorWidget extends StatefulWidget {
-  const FlutterQuillEditorWidget({super.key});
+class FleatherEditorWidget extends StatefulWidget {
+  const FleatherEditorWidget({super.key});
 
   @override
-  State<FlutterQuillEditorWidget> createState() =>
-      _FlutterQuillEditorWidgetState();
+  State<FleatherEditorWidget> createState() => _FleatherEditorWidgetState();
 }
 
-class _FlutterQuillEditorWidgetState extends State<FlutterQuillEditorWidget> {
-  final quill.QuillController _controller = quill.QuillController.basic();
+class _FleatherEditorWidgetState extends State<FleatherEditorWidget> {
+  final FleatherController _controller = FleatherController();
   final DeltaToMarkdown _mdConverter = DeltaToMarkdown();
 
-  StreamSubscription<quill.DocChange>? _stream;
+  StreamSubscription<ParchmentChange>? _stream;
   String? mdContent;
   String? htmlContent;
 
@@ -33,8 +33,8 @@ class _FlutterQuillEditorWidgetState extends State<FlutterQuillEditorWidget> {
   void initState() {
     super.initState();
 
-    _stream = _controller.document.changes.listen((quill.DocChange items) {
-      var delta = _controller.document.toDelta();
+    _stream = _controller.document.changes.listen((ParchmentChange items) {
+      var delta = quill.Delta.fromJson(_controller.document.toDelta().toJson());
       var md = _mdConverter.convert(delta);
       var html = markdownToHtml(md);
 
@@ -53,9 +53,9 @@ class _FlutterQuillEditorWidgetState extends State<FlutterQuillEditorWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        quill.QuillSimpleToolbar(controller: _controller),
+        FleatherToolbar.basic(controller: _controller),
         Expanded(
-          child: quill.QuillEditor.basic(
+          child: FleatherEditor(
             controller: _controller,
           ),
         ),
