@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 import 'presentation/screens/editor_tabs_screen.dart';
 
@@ -17,6 +19,12 @@ class EditorComparisonApp extends StatelessWidget {
       title: title,
       theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        FlutterQuillLocalizations.delegate,
+        DefaultMaterialLocalizations.delegate,
+        DefaultCupertinoLocalizations.delegate,
+        DefaultWidgetsLocalizations.delegate,
+      ],
       home: const EditorTabsScreen(),
     );
   }

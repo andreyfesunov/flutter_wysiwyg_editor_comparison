@@ -1,21 +1,51 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:flutter_wysiwyg_editor_comparison/presentation/widgets/editor_result_table_widget.dart';
+import 'package:markdown/markdown.dart';
+import 'package:markdown_quill/markdown_quill.dart';
 
 class FlutterQuillEditorWidget extends StatefulWidget {
   const FlutterQuillEditorWidget({super.key});
 
   @override
-  State<quill.QuillEditor> createState() => _FlutterQuillEditorState();
+  State<FlutterQuillEditorWidget> createState() => _FlutterQuillEditorState();
 }
 
-class _FlutterQuillEditorState extends State<quill.QuillEditor> {
+class _FlutterQuillEditorState extends State<FlutterQuillEditorWidget> {
   final quill.QuillController _controller = quill.QuillController.basic();
-  String _textOutput = '';
+  final DeltaToMarkdown _mdConverter = DeltaToMarkdown();
 
-  void _extractText() {
+  StreamSubscription<quill.DocChange>? _stream;
+  String? mdContent;
+  String? htmlContent;
+
+  void updateContent(String? newMdContent, String? newHtmlContent) {
     setState(() {
-      _textOutput = _controller.document.toPlainText();
+      mdContent = newMdContent;
+      htmlContent = newHtmlContent;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _stream = _controller.document.changes.listen((quill.DocChange items) {
+      var delta = _controller.document.toDelta();
+      var md = _mdConverter.convert(delta);
+      var html = markdownToHtml(md);
+
+      updateContent(md, html);
+    });
+  }
+
+  @override
+  void dispose() {
+    _stream?.cancel();
+
+    super.dispose();
   }
 
   @override
@@ -28,14 +58,9 @@ class _FlutterQuillEditorState extends State<quill.QuillEditor> {
             controller: _controller,
           ),
         ),
-        ElevatedButton(
-          onPressed: _extractText,
-          child: const Text('Get Text'),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text('Result:\n$_textOutput'),
-        ),
+        Expanded(
+            child: EditorResultTableWidget(
+                mdContent: mdContent, htmlContent: htmlContent))
       ],
     );
   }
