@@ -2,10 +2,7 @@ import 'dart:async';
 
 import 'package:fleather/fleather.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/quill_delta.dart' as quill;
 import 'package:flutter_wysiwyg_editor_comparison/presentation/widgets/editor_result_table_widget.dart';
-import 'package:markdown/markdown.dart';
-import 'package:markdown_quill/markdown_quill.dart';
 import 'package:parchment_to_html/parachment_to_html.dart';
 import 'package:html2md/html2md.dart' as html2md;
 

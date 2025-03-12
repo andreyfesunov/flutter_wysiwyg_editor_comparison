@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_wysiwyg_editor_comparison/presentation/widgets/editor_result_table_widget.dart';
 import 'package:markdown/markdown.dart';
 import 'package:markdown_quill/markdown_quill.dart';
@@ -15,10 +15,10 @@ class FlutterQuillEditorWidget extends StatefulWidget {
 }
 
 class _FlutterQuillEditorWidgetState extends State<FlutterQuillEditorWidget> {
-  final quill.QuillController _controller = quill.QuillController.basic();
+  final QuillController _controller = QuillController.basic();
   final DeltaToMarkdown _mdConverter = DeltaToMarkdown();
 
-  StreamSubscription<quill.DocChange>? _stream;
+  StreamSubscription<DocChange>? _stream;
   String? mdContent;
   String? htmlContent;
 
@@ -36,7 +36,7 @@ class _FlutterQuillEditorWidgetState extends State<FlutterQuillEditorWidget> {
     // Uses third-party libraries to parse quill_delta format:
     // - markdown_quill (https://pub.dev/packages/markdown_quill)
     // - markdown (https://pub.dev/packages/markdown)
-    _stream = _controller.document.changes.listen((quill.DocChange items) {
+    _stream = _controller.document.changes.listen((DocChange items) {
       var delta = _controller.document.toDelta();
       var md = _mdConverter.convert(delta);
       var html = markdownToHtml(md);
@@ -56,9 +56,9 @@ class _FlutterQuillEditorWidgetState extends State<FlutterQuillEditorWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        quill.QuillSimpleToolbar(controller: _controller),
+        QuillSimpleToolbar(controller: _controller),
         Expanded(
-          child: quill.QuillEditor.basic(
+          child: QuillEditor.basic(
             controller: _controller,
           ),
         ),
