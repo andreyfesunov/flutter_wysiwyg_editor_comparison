@@ -33,6 +33,9 @@ class _FlutterQuillEditorWidgetState extends State<FlutterQuillEditorWidget> {
   void initState() {
     super.initState();
 
+    // Uses third-party libraries to parse quill_delta format:
+    // - markdown_quill (https://pub.dev/packages/markdown_quill)
+    // - markdown (https://pub.dev/packages/markdown)
     _stream = _controller.document.changes.listen((quill.DocChange items) {
       var delta = _controller.document.toDelta();
       var md = _mdConverter.convert(delta);

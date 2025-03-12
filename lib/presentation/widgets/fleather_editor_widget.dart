@@ -6,6 +6,8 @@ import 'package:flutter_quill/quill_delta.dart' as quill;
 import 'package:flutter_wysiwyg_editor_comparison/presentation/widgets/editor_result_table_widget.dart';
 import 'package:markdown/markdown.dart';
 import 'package:markdown_quill/markdown_quill.dart';
+import 'package:parchment_to_html/parachment_to_html.dart';
+import 'package:html2md/html2md.dart' as html2md;
 
 class FleatherEditorWidget extends StatefulWidget {
   const FleatherEditorWidget({super.key});
@@ -16,7 +18,7 @@ class FleatherEditorWidget extends StatefulWidget {
 
 class _FleatherEditorWidgetState extends State<FleatherEditorWidget> {
   final FleatherController _controller = FleatherController();
-  final DeltaToMarkdown _mdConverter = DeltaToMarkdown();
+  final ParchmentHtmlCodec _htmlConverter = const ParchmentHtmlCodec();
 
   StreamSubscription<ParchmentChange>? _stream;
   String? mdContent;
@@ -33,10 +35,13 @@ class _FleatherEditorWidgetState extends State<FleatherEditorWidget> {
   void initState() {
     super.initState();
 
+    // Uses third-party libraries to parse parchment_delta format:
+    // - html2md           (https://pub.dev/packages/html2md)
+    // - parchment_to_html (https://pub.dev/packages/parchment_to_html)
     _stream = _controller.document.changes.listen((ParchmentChange items) {
-      var delta = quill.Delta.fromJson(_controller.document.toDelta().toJson());
-      var md = _mdConverter.convert(delta);
-      var html = markdownToHtml(md);
+      var delta = _controller.document.toDelta();
+      var html = _htmlConverter.encode(delta);
+      var md = html2md.convert(html);
 
       updateContent(md, html);
     });
