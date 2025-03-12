@@ -22,6 +22,8 @@ class _HtmlEditorEnhancedWidgetState extends State<HtmlEditorEnhancedWidget> {
     _editor = HtmlEditor(
         controller: _controller,
         callbacks: Callbacks(onChangeContent: (String? html) {
+          // Uses third-party libraries to parse html format:
+          // - html2md           (https://pub.dev/packages/html2md)
           var md = html2md.convert(html ?? "");
 
           updateContent(md, html);
