@@ -5,6 +5,7 @@ This repository is a project written in Flutter 3.29.1 that compares various Mar
 ## Editors Included:
 - [flutter_quill](https://pub.dev/packages/flutter_quill)
 - [fleather](https://pub.dev/packages/fleather)
+- [html_editor_enhanced](https://pub.dev/packages/html_editor_enhanced)
 
 ## Comparison Result
 
